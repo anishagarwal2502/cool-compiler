@@ -642,23 +642,15 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -21:
 						break;
 					case 21:
-						{ 
-							yybegin( STRING );
-							string_buf.delete(0, string_buf.length());
-						}
+						{ yybegin(STRING); string_buf.delete(0, string_buf.length()); }
 					case -22:
 						break;
 					case 22:
-						{ return new Symbol(TokenConstants.INT_CONST, 
-											AbstractTable.inttable.addString(yytext())); }
+						{ return new Symbol(TokenConstants.INT_CONST, AbstractTable.inttable.addString(yytext())); }
 					case -23:
 						break;
 					case 23:
-						{ /* This rule should be the very last
-                                     in your lexical specification and
-                                     will match match everything not
-                                     matched by other lexical rules. */
-                                  System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+						{ return new Symbol(TokenConstants.ERROR, yytext()); }
 					case -24:
 						break;
 					case 24:
@@ -686,10 +678,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -30:
 						break;
 					case 30:
-						{ 
-							yybegin( COMMENT ); 
-							curr_comment_count++;
-						}
+						{ yybegin(COMMENT); curr_comment_count++; }
 					case -31:
 						break;
 					case 31:
@@ -697,10 +686,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -32:
 						break;
 					case 32:
-						{
-							yybegin( COMMENT );
-							in_dash_comment = true;
-						}
+						{yybegin(COMMENT); in_dash_comment = true; }
 					case -33:
 						break;
 					case 33:
@@ -780,53 +766,45 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -52:
 						break;
 					case 52:
-						{
-								curr_lineno++;
-								if(in_dash_comment){
-									in_dash_comment = false;
-									yybegin( YYINITIAL );
-								}
-							}
+						{ curr_lineno++;
+				  if(in_dash_comment){
+					in_dash_comment = false;
+					yybegin(YYINITIAL);
+				  }
+				}
 					case -53:
 						break;
 					case 53:
-						{
-								if(!in_dash_comment){
-									curr_comment_count++;
-								}
-							}
+						{ if(!in_dash_comment){
+				        curr_comment_count++;
+				  }
+				}
 					case -54:
 						break;
 					case 54:
-						{
-								if(!in_dash_comment){
-									curr_comment_count--;
-									if(get_curr_comment_count() == 0){
-										yybegin( YYINITIAL );
-									}
-								}
-							}
+						{ if(!in_dash_comment){
+					curr_comment_count--;
+					if(get_curr_comment_count() == 0){
+						yybegin(YYINITIAL);
+					}
+				  }
+				}
 					case -55:
 						break;
 					case 55:
-						{ 
-								string_buf.append(yytext());
-							}
+						{ string_buf.append(yytext()); }
 					case -56:
 						break;
 					case 56:
-						{
-							yybegin( YYINITIAL );
-							if(string_buf.length() > MAX_STR_CONST - 1){
-								return new Symbol(TokenConstants.ERROR,
-													"String constant too long");
-							}
-							if(!null_string){
-								null_string = false;
-								return new Symbol(TokenConstants.STR_CONST,
-												AbstractTable.stringtable.addString(string_buf.toString()));
-							}
-						}
+						{ yybegin(YYINITIAL); 
+                                  if(string_buf.length() > MAX_STR_CONST - 1){
+				        return new Symbol(TokenConstants.ERROR, "String constant too long");
+				  }
+			          if(!null_string){
+				        null_string = false;
+				        return new Symbol(TokenConstants.STR_CONST, AbstractTable.stringtable.addString(string_buf.toString()));
+				  }
+				}
 					case -57:
 						break;
 					case 57:
@@ -834,68 +812,43 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -58:
 						break;
 					case 58:
-						{
-								null_string = true;
-								return new Symbol(TokenConstants.ERROR, "String contains null character");
-							}
+						{ null_string = true;
+				 return new Symbol(TokenConstants.ERROR, "String contains null character"); }
 					case -59:
 						break;
 					case 59:
-						{
-								yybegin( YYINITIAL );
-								string_buf.delete(0, string_buf.length());
-								curr_lineno++;
-								if(!null_string){
-									return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
-								}
-							}
+						{ yybegin(YYINITIAL);
+				  string_buf.delete(0, string_buf.length());
+				  curr_lineno++;
+				  if(!null_string){
+				  	return new Symbol(TokenConstants.ERROR, "Unterminated string constant");
+				  }
+				}
 					case -60:
 						break;
 					case 60:
-						{
-							char c = yytext().charAt(1);
-							switch(c){
-							case 'b':
-								string_buf.append('\b');
-								break;
-							case 't':
-								string_buf.append('\t');
-								break;
-							case 'n':
-								string_buf.append('\n');
-								break;
-							case 'f':
-								string_buf.append('\f');
-								break;
-							case '"':
-								string_buf.append("\"");
-								break;
-							case '\\':
-								string_buf.append("\\");
-								break;
-							default:
-								System.out.println("How did you screw up?");
-								break;
-							}
-							}
+						{ char c = yytext().charAt(1);
+                                  switch(c){
+                                        case 'b': string_buf.append('\b'); break;
+					case 't': string_buf.append('\t'); break;
+					case 'n': string_buf.append('\n'); break;
+					case 'f': string_buf.append('\f'); break;
+					case '"': string_buf.append("\""); break;
+					case '\\': string_buf.append("\\"); break;
+					default: System.out.println("Invalid Character at line "+ curr_lineno); break;
+				  }
+				}
 					case -61:
 						break;
 					case 61:
-						{	
-								curr_lineno++;
-								char c = yytext().charAt(1);
-								switch(c){
-								case '\015':
-									string_buf.append('\015');
-									break;
-								case '\n':
-									string_buf.append('\n');
-									break;
-								default:
-									System.out.println("How did you screw up?");
-									break;
-								}
-							}
+						{ curr_lineno++;
+				  char c = yytext().charAt(1);
+				  switch(c){
+				        case '\015': string_buf.append('\015');	break;
+					case '\n': string_buf.append('\n'); break;
+					default: System.out.println("Invalid Character at line "+ curr_lineno); break;
+				  }
+				}
 					case -62:
 						break;
 					case 63:
@@ -979,9 +932,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -82:
 						break;
 					case 83:
-						{ 
-								string_buf.append(yytext());
-							}
+						{ string_buf.append(yytext()); }
 					case -83:
 						break;
 					case 85:
@@ -997,9 +948,7 @@ class CoolLexer implements java_cup.runtime.Scanner {
 					case -86:
 						break;
 					case 88:
-						{ 
-								string_buf.append(yytext());
-							}
+						{ string_buf.append(yytext()); }
 					case -87:
 						break;
 					case 89:

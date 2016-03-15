@@ -165,7 +165,7 @@ INVIS = [\001\002\003\004]
 					case 'f': string_buf.append('\f'); break;
 					case '"': string_buf.append("\""); break;
 					case '\\': string_buf.append("\\"); break;
-					default: System.out.println("How did you screw up?"); break;
+					default: System.out.println("Invalid Character at line "+ curr_lineno); break;
 				  }
 				}
 						
@@ -179,7 +179,7 @@ INVIS = [\001\002\003\004]
 				  switch(c){
 				        case '\015': string_buf.append('\015');	break;
 					case '\n': string_buf.append('\n'); break;
-					default: System.out.println("How did you screw up?"); break;
+					default: System.out.println("Invalid Character at line "+ curr_lineno); break;
 				  }
 				}
 
@@ -218,4 +218,4 @@ INVIS = [\001\002\003\004]
 <YYINITIAL> {BAD}|{BADDER}|{INVIS}		{ return new Symbol(TokenConstants.ERROR, "" + yytext() + ""); }
 
 <COMMENT> .                                     { /* Do nothing. */ }
-<YYINITIAL> .                                   { System.err.println("LEXER BUG - UNMATCHED: " + yytext()); }
+<YYINITIAL> .                                   { return new Symbol(TokenConstants.ERROR, yytext()); }
