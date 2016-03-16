@@ -125,7 +125,6 @@ INVIS = [\001\002\003\004]
 <YYINITIAL> "="			{ return new Symbol(TokenConstants.EQ); }
 <YYINITIAL> "<"			{ return new Symbol(TokenConstants.LT); }
 <YYINITIAL> "."			{ return new Symbol(TokenConstants.DOT); }
-<YYINITIAL> "+"			{ return new Symbol(TokenConstants.PLUS); }
 <YYINITIAL> "~"			{ return new Symbol(TokenConstants.NEG); }
 <YYINITIAL> ","			{ return new Symbol(TokenConstants.COMMA); }
 <YYINITIAL> ";"			{ return new Symbol(TokenConstants.SEMI); }
